@@ -1,0 +1,11 @@
+{
+    "default": true,
+    "line-length": false,
+    "no-trailing-punctuation": false,
+    "no-duplicate-heading": true,
+    "no-multiple-blanks": true,
+    "no-hard-tabs": true,
+    "no-space-in-emphasis": true,
+    "no-missing-space-atx": true,
+    "list-marker-space": true
+}
