@@ -1,6 +1,9 @@
 package models
 
-import "github.com/hiteshnayak305/go-rest-project/db"
+import (
+	"github.com/hiteshnayak305/go-rest-project/db"
+	"github.com/hiteshnayak305/go-rest-project/internal/util"
+)
 
 type User struct {
 	ID       int64  `json:"id"`
@@ -9,6 +12,11 @@ type User struct {
 }
 
 func (u *User) CreateUser() error {
+
+	hashedpass, err := util.HashPassword(u.Password)
+	if err != nil {
+		return err
+	}
 
 	query := `
 	INSERT INTO users(email, password)
@@ -20,7 +28,7 @@ func (u *User) CreateUser() error {
 	}
 	defer stmt.Close()
 
-	result, err := stmt.Exec(u.Email, u.Password)
+	result, err := stmt.Exec(u.Email, hashedpass)
 
 	if err != nil {
 		return err
