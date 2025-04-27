@@ -1,0 +1,13 @@
+{
+    "github.copilot.enable": {
+        "*": false,
+        "plaintext": true,
+        "markdown": true,
+        "scminput": false
+    },
+    "[go]": {
+        "editor.insertSpaces": true,
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "golang.go"
+    },
+}
