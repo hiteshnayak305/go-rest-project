@@ -43,7 +43,15 @@ func Login(context *gin.Context) {
 
 	//check password match
 	if util.CheckPasswordHash(user.Password, validUser.Password) {
-		context.JSON(http.StatusOK, gin.H{"message": "User login successfully"})
+		token, err := util.GenerateToken(validUser.Email, validUser.ID)
+		if err != nil {
+			context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
+
+		context.JSON(http.StatusOK, gin.H{
+			"message": "User login successfully",
+			"token":   token})
 	} else {
 		context.JSON(http.StatusUnauthorized, gin.H{"message": "User login failed"})
 	}
