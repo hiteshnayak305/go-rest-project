@@ -61,3 +61,14 @@ func (e *Event) CreateEvent() error {
 	e.ID = id
 	return err
 }
+
+func GetEventByID(id int64) (*Event, error) {
+	var event Event
+	query := "SELECT * FROM events WHERE id = ?"
+	row := db.SqlConnection.QueryRow(query, id)
+	err := row.Scan(&event.ID, &event.Name, &event.Description, &event.Location, &event.DateTime, &event.UserID)
+	if err != nil {
+		return nil, err
+	}
+	return &event, nil
+}
