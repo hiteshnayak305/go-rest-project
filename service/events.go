@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/hiteshnayak305/go-rest-project/internal/util"
 	"github.com/hiteshnayak305/go-rest-project/models"
 )
 
@@ -40,8 +41,15 @@ func CreateEvent(context *gin.Context) {
 		return
 	}
 
+	claim, err := util.GetCustomClaim(context, "claim")
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid claim type"})
+		return
+	}
+	event.UserID = claim.UserID
+
 	// Save the event using the Save method
-	err := event.CreateEvent()
+	err = event.CreateEvent()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
@@ -73,6 +81,17 @@ func UpdateEvent(context *gin.Context) {
 		return
 	}
 
+	claim, err := util.GetCustomClaim(context, "claim")
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid claim type"})
+		return
+	}
+
+	if event.UserID != claim.UserID {
+		context.JSON(http.StatusForbidden, gin.H{"error": "User not authorized to operate on this object"})
+		return
+	}
+
 	// updated event
 	event.ID = id
 	event.UpdateEvent()
@@ -93,6 +112,17 @@ func DeleteEvent(context *gin.Context) {
 	event, err := models.GetEventByID(id)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	claim, err := util.GetCustomClaim(context, "claim")
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid claim type"})
+		return
+	}
+
+	if event.UserID != claim.UserID {
+		context.JSON(http.StatusForbidden, gin.H{"error": "User not authorized to operate on this object"})
 		return
 	}
 
