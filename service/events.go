@@ -52,6 +52,13 @@ func CreateEvent(context *gin.Context) {
 }
 
 func UpdateEvent(context *gin.Context) {
+	// Bind id from param
+	id, err := strconv.ParseInt(context.Param("id"), 10, 64)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	// Bind the incoming JSON to the Event struct
 	var event models.Event
 	if err := context.ShouldBindJSON(&event); err != nil {
@@ -59,32 +66,43 @@ func UpdateEvent(context *gin.Context) {
 		return
 	}
 
-	// Save the event using the Save method
-	err := event.CreateEvent()
+	// fetch existing event
+	_, err = models.GetEventByID(id)
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
+	// updated event
+	event.ID = id
+	event.UpdateEvent()
+
 	// Respond with a success message
-	context.JSON(http.StatusCreated, gin.H{"message": "Event created successfully"})
+	context.JSON(http.StatusOK, gin.H{"message": "Event updated successfully"})
 }
 
 func DeleteEvent(context *gin.Context) {
-	// Bind the incoming JSON to the Event struct
-	var event models.Event
-	if err := context.ShouldBindJSON(&event); err != nil {
+	// Bind id from param
+	id, err := strconv.ParseInt(context.Param("id"), 10, 64)
+	if err != nil {
 		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	// Save the event using the Save method
-	err := event.CreateEvent()
+	// fetch existing event
+	event, err := models.GetEventByID(id)
+	if err != nil {
+		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	// Delete event
+	err = event.DeleteEvent()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
 	// Respond with a success message
-	context.JSON(http.StatusCreated, gin.H{"message": "Event created successfully"})
+	context.JSON(http.StatusNoContent, gin.H{"message": "Event deleted successfully"})
 }
