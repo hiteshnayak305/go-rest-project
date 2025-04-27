@@ -38,3 +38,25 @@ func (u *User) CreateUser() error {
 	u.ID = id
 	return err
 }
+
+func GetUserByID(id int64) (*User, error) {
+	var user User
+	query := "SELECT * FROM users WHERE id = ?"
+	row := db.SqlConnection.QueryRow(query, id)
+	err := row.Scan(&user.ID, &user.Email, &user.Password)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
+
+func GetUserByEmail(email string) (*User, error) {
+	var user User
+	query := "SELECT * FROM users WHERE email = ?"
+	row := db.SqlConnection.QueryRow(query, email)
+	err := row.Scan(&user.ID, &user.Email, &user.Password)
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}
