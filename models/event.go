@@ -8,14 +8,12 @@ import (
 
 type Event struct {
 	ID          int64     `json:"id"`
-	Name        string    `json:"name"`
-	Description string    `json:"description"`
-	Location    string    `json:"location"`
-	DateTime    time.Time `json:"date_time"`
+	Name        string    `json:"name" binding:"required"`
+	Description string    `json:"description" binding:"required"`
+	Location    string    `json:"location" binding:"required"`
+	DateTime    time.Time `json:"date_time" binding:"required"`
 	UserID      int       `json:"user_id"`
 }
-
-var events = []Event{}
 
 func GetAllEvents() ([]Event, error) {
 
