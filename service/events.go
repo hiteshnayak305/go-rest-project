@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/hiteshnayak305/go-rest-project/internal/util"
 	"github.com/hiteshnayak305/go-rest-project/models"
 )
 
@@ -33,6 +34,19 @@ func GetEvents(context *gin.Context) {
 }
 
 func CreateEvent(context *gin.Context) {
+	//authorize
+	token := context.Request.Header.Get("Authorization")
+	if token == "" {
+		context.JSON(http.StatusUnauthorized, gin.H{"error": "Authorization token is required"})
+		return
+	}
+
+	claim, err := util.VerifyToken(token)
+	if err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
 	// Bind the incoming JSON to the Event struct
 	var event models.Event
 	if err := context.ShouldBindJSON(&event); err != nil {
@@ -40,8 +54,10 @@ func CreateEvent(context *gin.Context) {
 		return
 	}
 
+	event.UserID = claim.UserID
+
 	// Save the event using the Save method
-	err := event.CreateEvent()
+	err = event.CreateEvent()
 	if err != nil {
 		context.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
