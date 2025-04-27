@@ -4,6 +4,7 @@ import (
 	"errors"
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
 )
 
@@ -51,4 +52,16 @@ func VerifyToken(token string) (*CustomClaim, error) {
 		Email:  email,
 		UserID: userId,
 	}, nil
+}
+
+func GetCustomClaim(context *gin.Context, key string) (*CustomClaim, error) {
+	claim, exists := context.Get(key)
+	if !exists {
+		return nil, errors.New("context doesn't contain value with key: " + key)
+	}
+	customClaim, ok := claim.(*CustomClaim)
+	if !ok {
+		return nil, errors.New("Invalid CustomClaim in context")
+	}
+	return customClaim, nil
 }
