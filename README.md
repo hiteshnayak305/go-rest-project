@@ -8,6 +8,12 @@ TODO
 
 ## Architecture
 
+### Data Model
+
+![data-model](doc/architecture/data-model/data-model.jpg)
+
+### Web Service
+
 TODO
 
 ## API Schema
