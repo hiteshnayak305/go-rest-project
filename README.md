@@ -4,11 +4,19 @@ Sample Go web application to showcase REST API development.
 
 ## Features & Technologies
 
-TODO
+- Gin Web Framework
+- JWT Authentication
+- Sqlite Database
 
 ## Architecture
 
-TODO
+### Data Model
+
+![data-model](docs/architecture/data-model/data-model.jpg)
+
+### Web Service
+
+Refer to postman [docs/go-rest-project.postman_collection.json](docs/go-rest-project.postman_collection.json) for API endpoints.
 
 ## API Schema
 
